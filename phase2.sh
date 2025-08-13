@@ -19,6 +19,18 @@ read -p "请输入选项 [1-5]: " choice
 
 case $choice in
     1)
+        # 如果已有 screen 会话，先删除
+        if screen -list | grep -q "\.phase"; then
+            echo ">>> 检测到已有 phase 会话，正在停止..."
+            screen -S phase -X quit
+        fi
+
+        # 如果已有目录，先删除
+        if [ -d ~/trusted-setup-tmp ]; then
+            echo ">>> 检测到已有 trusted-setup-tmp 目录，正在删除..."
+            rm -rf ~/trusted-setup-tmp
+        fi
+
         echo ">>> 开始安装依赖..."
         # 安装 nvm
         curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
