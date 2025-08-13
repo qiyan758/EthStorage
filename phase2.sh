@@ -34,7 +34,11 @@ case $choice in
         echo ">>> 开始安装依赖..."
         # 安装 nvm
         curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-        source ~/.bashrc
+
+        # 加载 nvm 环境变量（无论是否首次安装）
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
         # 安装并使用 Node.js 18
         nvm install 18
@@ -54,6 +58,8 @@ case $choice in
 
         # 启动后台贡献
         screen -dmS phase bash -c '
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
         cd ~/trusted-setup-tmp
         phase2cli contribute -c ethstorage-v1-trusted-setup-ceremony
         phase2cli clean
