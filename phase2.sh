@@ -8,7 +8,7 @@ echo -e "║  📢  推特：https://x.com/garciaisabel60  ║"
 echo -e "╚════════════════════════════════════════╝"
 echo ""
 echo -e "请选择操作："
-echo "1. 安装并运行 Ceremony (screen 后台)"
+echo "1. 安装并运行 Ceremony"
 echo "2. 查看 Ceremony 运行状态"
 echo "3. 重新连接到 Ceremony 会话"
 echo "4. 停止 Ceremony 会话"
@@ -19,8 +19,7 @@ read -p "请输入选项 [1-5]: " choice
 
 case $choice in
     1)
-        echo ">>> 创建 screen 会话并运行 ceremony..."
-        screen -dmS phase bash -c '
+        echo ">>> 开始安装依赖..."
         # 安装 nvm
         curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
         source ~/.bashrc
@@ -35,19 +34,21 @@ case $choice in
         # 安装 Phase2 CLI
         npm install -g @p0tion/phase2cli
 
-        # GitHub 身份验证
+        # GitHub 身份验证（前台显示 code）
         echo ">>> 现在开始 GitHub 认证，请根据提示在浏览器登录并授权..."
         phase2cli auth
 
-        # 开始贡献
-        phase2cli contribute -c ethstorage-v1-trusted-setup-ceremony
+        read -p "按回车继续启动后台贡献任务..."
 
-        # 完成后清理
+        # 启动后台贡献
+        screen -dmS phase bash -c '
+        cd ~/trusted-setup-tmp
+        phase2cli contribute -c ethstorage-v1-trusted-setup-ceremony
         phase2cli clean
         phase2cli logout
         rm -rf ~/trusted-setup-tmp
         '
-        echo ">>> Ceremony 已在后台运行，使用 'screen -r phase2' 查看进度"
+        echo ">>> Ceremony 已在后台运行，使用 'screen -r phase' 查看进度"
         ;;
     2)
         screen -ls
